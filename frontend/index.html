@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Texas A&M Aggie Baja Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="headerBar">
+      <img class="logo" src="images/baja_logo.png" alt="Aggie Baja Logo" />
+      <h1 class="title">Aggie Baja Dashboard</h1>
+    </div>
+    <div class="infoContainer">
+      <div class="infoCard">
+        <div class="infoHeader">Counter</div>
+
+        <div class="infoData">
+          <span id="counter">0</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">Engine RPM</div>
+
+        <div class="infoData">
+          <span id="rpm">N/A</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">CVT temp</div>
+
+        <div class="infoData">
+          <span id="cvttemp">N/A</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">Battery Voltage</div>
+
+        <div class="infoData">
+          <span id="battvolt">N/A</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">Speed</div>
+
+        <div class="infoData">
+          <span id="speed">N/A</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">Throttle</div>
+
+        <div class="infoData">
+          <span id="throttle">N/A</span>
+        </div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoHeader">Status</div>
+
+        <div class="infoData">
+          <span id="status">N/A</span>
+        </div>
+      </div>
+    </div>
+    <div id="counterGraph"></div>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <script src="graphs.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
