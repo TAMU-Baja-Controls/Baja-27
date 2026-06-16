@@ -1,1 +1,1 @@
-# baja-telemetry-dashboard
+# baja-cool-telemetry-dashboard 
