@@ -8,6 +8,7 @@
 bool initializeMotorControl();
 
 void updateForceMotorControl();
+void updateButtonMotorControl();
 
 void enableForceControl();
 void disableForceControl();

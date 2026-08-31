@@ -2,8 +2,9 @@
   TAMU 2027-2028 Dynamometer Brake Actuation Script
 
   Pinout (currently using ESP32-C3-SuperMini)
-    GPIO 4: Inductive primary RPM
-    GPIO 3: Hall-effect secondary RPM
+    GPIO 0: Hall-effect secondary RPM (1)
+    GPIO 1: Hall-effect secondary RPM (2)
+    GPIO 2: Inductive primary RPM
     GPIO 5: HX711 DT
     GPIO 6: HX711 SCK
     GPIO 7: PWM signal
@@ -138,7 +139,8 @@ void loop() {
 
   readSerialInput();
   updateSensors();
-  updateForceMotorControl();
+  // updateForceMotorControl(); // disabled for button testing
+  updateButtonMotorControl();
 
   if (millis() - lastPrintMs >= 100) {
     lastPrintMs = millis();
@@ -146,8 +148,11 @@ void loop() {
     Serial.print("Primary RPM: ");
     Serial.print(getPrimaryRPM(), 1);
 
-    Serial.print(" | Secondary RPM: ");
-    Serial.print(getSecondaryRPM(), 1);
+    Serial.print(" | Secondary RPM 1: ");
+    Serial.print(getSecondaryRPM1(), 1);
+
+    Serial.print(" | Secondary RPM 2: ");
+    Serial.print(getSecondaryRPM2(), 1);
 
     Serial.print(" | Load cell: ");
 

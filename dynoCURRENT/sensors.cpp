@@ -12,18 +12,20 @@
 // ========================
 // PRIVATE FUNCTIONS/CONFIG
 // ========================
-namespace { // Anonymous namespace that can only be used within sensors.cpp
+namespace { 
   void updatePrimaryRPM();
-  void updateSecondaryRPM();
+  void updateSecondaryRPM1();
+  void updateSecondaryRPM2();
   void updateLoadCell();
 
   void IRAM_ATTR onInductivePulse();
-  void IRAM_ATTR onHallPulse();
+  void IRAM_ATTR onHall1Pulse();
+  void IRAM_ATTR onHall2Pulse();
 
   // Primary RPM config
-    const int INDUCTIVE_PIN = 4;
+    const int INDUCTIVE_PIN = 2;
 
-    const bool FOUR_STROKE = false;
+    const bool ENGINE_TYPE = false;
 
     const unsigned long INDUCTIVE_TIMEOUT_MS = 1000;
     const unsigned long MINIMUM_PRIMARY_INTERVAL_US = 10000;
@@ -36,8 +38,9 @@ namespace { // Anonymous namespace that can only be used within sensors.cpp
 
     float primaryRPM = 0.0f;
 
-  // Secondary RPM config
-    const int HALL_PIN = 3;
+  // Secondary RPM config (both hall-effects)
+    const int HALL_PIN_1 = 0;
+    const int HALL_PIN_2 = 1;
 
     const float PULSES_PER_REV = 3.0f;
     const unsigned long HALL_TIMEOUT_MS = 1000;
@@ -46,17 +49,23 @@ namespace { // Anonymous namespace that can only be used within sensors.cpp
     const unsigned long MINIMUM_SECONDARY_INTERVAL_US = 
       (unsigned long)(60000000.0f / (MAX_SECONDARY_RPM * PULSES_PER_REV));
 
-    volatile unsigned long lastHallMicros = 0;
-    volatile unsigned long hallIntervalMicros = 0;
-    volatile bool newHallPulse = false;
+    // Hall-Effect 1
+    volatile unsigned long lastHall1Micros = 0;
+    volatile unsigned long hall1IntervalMicros = 0;
+    volatile bool newHall1Pulse = false;
+    unsigned long lastHall1Millis = 0;
+    float secondaryRPM1 = 0.0f;
 
-    unsigned long lastHallMillis = 0;
-
-    float secondaryRPM = 0.0f;
+    // Hall-Effect 2
+    volatile unsigned long lastHall2Micros = 0;
+    volatile unsigned long hall2IntervalMicros = 0;
+    volatile bool newHall2Pulse = false;
+    unsigned long lastHall2Millis = 0;
+    float secondaryRPM2 = 0.0f;
 
   // Load cell config
-    const int HX711_DT_PIN = 5;
-    const int HX711_SCK_PIN = 6;
+    const int HX711_DT_PIN = 8;
+    const int HX711_SCK_PIN = 9;
 
     const float HX711_CALIBRATION_FACTOR = -695.0f;
     const float LOAD_CELL_FILTER_ALPHA = 0.20f;
@@ -118,24 +127,41 @@ namespace { // Anonymous namespace that can only be used within sensors.cpp
     }
   }
 
-  void IRAM_ATTR onHallPulse() {
+  void IRAM_ATTR onHall1Pulse() { // ISR 1
     unsigned long now = micros();
-    
-    if (lastHallMicros > 0) {
-      unsigned long interval = now - lastHallMicros;
+
+    if (lastHall1Micros > 0) {
+      unsigned long interval = now - lastHall1Micros;
 
       if (interval >= MINIMUM_SECONDARY_INTERVAL_US) {
-        hallIntervalMicros = interval;
-        newHallPulse = true;
-        lastHallMicros = now;
+        hall1IntervalMicros = interval;
+        newHall1Pulse = true;
+        lastHall1Micros = now;
       }
     }
     else {
-      lastHallMicros = now;
+      lastHall1Micros = now;
     }
   }
 
-  void updatePrimaryRPM() {
+  void IRAM_ATTR onHall2Pulse() { // ISR 2
+    unsigned long now = micros();
+
+    if (lastHall2Micros > 0) {
+      unsigned long interval = now - lastHall2Micros;
+
+      if (interval >= MINIMUM_SECONDARY_INTERVAL_US) {
+        hall2IntervalMicros = interval;
+        newHall2Pulse = true;
+        lastHall2Micros = now;
+      }
+    }
+    else {
+      lastHall2Micros = now;
+    }
+  }
+
+  void updatePrimaryRPM() { // Check this later if inductive sensor is acting up
     unsigned long interval;
     bool hasNewPulse;
 
@@ -147,43 +173,63 @@ namespace { // Anonymous namespace that can only be used within sensors.cpp
 
     interrupts();
 
-    if (hasNewPulse && interval > 0) {
+  if (hasNewPulse && interval > 0) {
       float pulsesPerMinute = 60000000.0f / (float)interval;
-
-      if (FOUR_STROKE) {
-        primaryRPM = pulsesPerMinute * 2.0f;
-      }
-      else {
-        primaryRPM = pulsesPerMinute;
-      }
+      primaryRPM = ENGINE_TYPE ? (pulsesPerMinute * 2.0f) : pulsesPerMinute;
 
       lastInductiveMillis = millis();
     }
-
     if (millis() - lastInductiveMillis > INDUCTIVE_TIMEOUT_MS) {
-      primaryRPM = 0.0f;
+      primaryRPM = 0.0f; // set RPM to 0 if timeout value has been passed
     }
   }
   
-  void updateSecondaryRPM() {
+  void updateSecondaryRPM1() {
     unsigned long interval;
     bool hasNewPulse;
 
     noInterrupts();
 
-    interval = hallIntervalMicros;
-    hasNewPulse = newHallPulse;
-    newHallPulse = false;
+    interval = hall1IntervalMicros;
+    hasNewPulse = newHall1Pulse;
+    newHall1Pulse = false;
 
     interrupts();
 
     if (hasNewPulse && interval > 0) {
-      secondaryRPM = 60000000.0f / ((float)interval * PULSES_PER_REV);
-      lastHallMillis = millis();
+      secondaryRPM1 =
+        60000000.0f / ((float)interval * PULSES_PER_REV);
+
+      lastHall1Millis = millis();
     }
 
-    if (millis() - lastHallMillis > HALL_TIMEOUT_MS) {
-      secondaryRPM = 0.0f;
+    if (millis() - lastHall1Millis > HALL_TIMEOUT_MS) {
+      secondaryRPM1 = 0.0f;
+    }
+  }
+
+
+  void updateSecondaryRPM2() {
+    unsigned long interval;
+    bool hasNewPulse;
+
+    noInterrupts();
+
+    interval = hall2IntervalMicros;
+    hasNewPulse = newHall2Pulse;
+    newHall2Pulse = false;
+
+    interrupts();
+
+    if (hasNewPulse && interval > 0) {
+      secondaryRPM2 =
+        60000000.0f / ((float)interval * PULSES_PER_REV);
+
+      lastHall2Millis = millis();
+    }
+
+    if (millis() - lastHall2Millis > HALL_TIMEOUT_MS) {
+      secondaryRPM2 = 0.0f;
     }
   }
 }
@@ -195,8 +241,11 @@ bool initializeSensors() {
   pinMode(INDUCTIVE_PIN, INPUT_PULLUP);  // Change INPUT_PULLUP to INPUT for on-engine testing
   attachInterrupt(digitalPinToInterrupt(INDUCTIVE_PIN), onInductivePulse, FALLING);
 
-  pinMode(HALL_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(HALL_PIN), onHallPulse, FALLING);
+  pinMode(HALL_PIN_1, INPUT);
+  attachInterrupt(digitalPinToInterrupt(HALL_PIN_1), onHall1Pulse, FALLING);
+
+  pinMode(HALL_PIN_2, INPUT);
+  attachInterrupt(digitalPinToInterrupt(HALL_PIN_2), onHall2Pulse, FALLING);
 
   loadCell.begin(HX711_DT_PIN, HX711_SCK_PIN);
   loadCell.set_scale(HX711_CALIBRATION_FACTOR);
@@ -223,7 +272,8 @@ bool initializeSensors() {
 }
 void updateSensors() {
   updatePrimaryRPM();
-  updateSecondaryRPM();
+  updateSecondaryRPM1();
+  updateSecondaryRPM2();
   updateLoadCell();
 }
 bool tareLoadCell() { // Public because called by main.ino file during user input
@@ -260,8 +310,11 @@ float getLoadCellReading() {
 float getPrimaryRPM() {
   return primaryRPM;
 }
-float getSecondaryRPM() {
-  return secondaryRPM;
+float getSecondaryRPM1() {
+  return secondaryRPM1;
+}
+float getSecondaryRPM2() {
+  return secondaryRPM2;
 }
 
 

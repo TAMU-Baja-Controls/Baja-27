@@ -16,7 +16,8 @@ bool isLoadCellReady();
 
 // Getter functions: allow for files outside of sensors.cpp to access a read-only version of the value
 float getPrimaryRPM();
-float getSecondaryRPM();
+float getSecondaryRPM1();
+float getSecondaryRPM2();
 float getLoadCellReading();
 
 #endif

@@ -11,6 +11,12 @@
 // PRIVATE FUNCTIONS/CONFIG
 // ========================
 namespace {
+  const int BUTTON_1_PIN = 4; // motor OUT
+  const int BUTTON_2_PIN = 3; // motor IN
+
+  const int BUTTON_1_PULSE_US = 1400; // motor OUT speed
+  const int BUTTON_2_PULSE_US = 1600; // motor IN speed
+
   // Motor PWM config
     const int PWM_PIN = 7;
 
@@ -50,6 +56,9 @@ namespace {
 // PUBLIC FUNCTIONS
 // ================
 bool initializeMotorControl() {
+  pinMode(BUTTON_1_PIN, INPUT_PULLUP); // released = HIGH; pressed = LOW
+  pinMode(BUTTON_2_PIN, INPUT_PULLUP); // released = HIGH; pressed = LOW
+
   if (!ledcAttach(PWM_PIN, PWM_FREQ, PWM_RES)) {
     return false;
   }
@@ -95,6 +104,21 @@ void updateForceMotorControl() {
   outputPulse = constrain(outputPulse, FORCE_CONTROL_MIN_PULSE_US, FORCE_CONTROL_MAX_PULSE_US);
 
   writePulseUs(outputPulse);
+}
+
+void updateButtonMotorControl() {
+  bool button1Pressed = (digitalRead(BUTTON_1_PIN) == LOW);
+  bool button2Pressed = (digitalRead(BUTTON_2_PIN) == LOW);
+
+  if (button1Pressed && !button2Pressed) { // only button 1 pressed
+    writePulseUs(BUTTON_1_PULSE_US);
+  }
+  else if (button2Pressed && !button1Pressed) { // only button 2 pressed
+    writePulseUs(BUTTON_2_PULSE_US);
+  }
+  else { // both or neither pressed
+    writePulseUs(NEUTRAL_PULSE_US);
+  }
 }
 
 // =======================
