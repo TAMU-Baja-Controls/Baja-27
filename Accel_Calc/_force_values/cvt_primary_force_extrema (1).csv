@@ -1,0 +1,3 @@
+metric,force_lbf,shift_in,rpm,reaction_x_lbf,reaction_y_lbf,basis
+maximum_pivot_reaction_magnitude,241.4536785,0.16,3900,230.3763181,-72.29544195,per flyweight
+maximum_roller_normal_force,316.5973438,0.2,3900,,,per flyweight
