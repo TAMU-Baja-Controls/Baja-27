@@ -68,5 +68,3 @@ def plot_secondary_clamp_force():
     ax.set_title('Secondary Clamping Force vs Torque and Shift')
 
     plt.show()
-
-plot_secondary_clamp_force()

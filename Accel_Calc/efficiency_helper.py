@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 # since efficiency is so fudgey, I'm not gonna mix it with the main physics calculations.
 
 # -------------------- BELT ----------------------
-BELT_ENGAGEMENT_LOSS = 1.005
+BELT_ENGAGEMENT_LOSS = 1.003
 BELT_PEAK_ETA = 0.90 # from messick's
 BELT_RATIO_POINTS = [ # ratio, efficiency
     (1.0, 1.0),

@@ -6,7 +6,7 @@ import general_constants as gc
 from Tire import tire_constants as tc
 
 slips = np.array([0.0, 0.02, 0.05, 0.10, 0.15, 0.25, 0.40, 0.60, 0.80, 1.0])
-coefficients = np.array([0.0, 0.24, 0.48, 0.66, 0.70, 0.67, 0.62, 0.58, 0.55, 0.54])
+coefficients = np.array([0.0, 0.55, 0.66, 1.0, 0.89, 0.76, 0.65, 0.58, 0.55, 0.54])
 
 mu_function = interp1d(slips, coefficients, kind='cubic')
 

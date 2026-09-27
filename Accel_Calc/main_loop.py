@@ -23,7 +23,7 @@ tire = Tire(0.0, 0.0, 0.0)
 
 logger = Logger("main_loop_log.csv")
 
-POSITION_TARGET = 200 # ft
+POSITION_TARGET = 150 # ft
 
 dyno_mode: bool = gc.dyno_mode
 

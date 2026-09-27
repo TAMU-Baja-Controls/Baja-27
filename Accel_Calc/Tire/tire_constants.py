@@ -16,7 +16,7 @@ class TireConstants:
     deflection: float = 1.0 / 12.0  # ft -- how much radius is lost to squish
     section_height: float = 5.5 / 12.0  # ft -- edge of rim bead to edge of tire
 
-    launch_transient_v_floor: float = 5.0 # ft / s helps make slip calculations sane at launch
+    launch_transient_v_floor: float = 2.0 # ft / s helps make slip calculations sane at launch
 @frozen
 class SurfaceConstants:
     cone_index_kPa: float

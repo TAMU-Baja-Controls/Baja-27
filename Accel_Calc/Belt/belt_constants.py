@@ -29,7 +29,7 @@ class Constants:
     # Derived values computed from geometry/force
     belt_mass_per_length: float = field(init=False) # slugs / in
 
-    shift_fudge_k: float = 0.001 # units are (inches / s) / lbs i guess -- not a real physical constant, just a tuning parameter
+    shift_fudge_k: float = 0.0005 # units are (inches / s) / lbs i guess -- not a real physical constant, just a tuning parameter
     # positive constant that turns the secondary clamp delta into a shift_in change for a timestep
 
     mu: float = 0.3
