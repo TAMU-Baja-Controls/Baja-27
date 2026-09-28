@@ -23,7 +23,7 @@ tire = Tire(0.0, 0.0, 0.0)
 
 logger = Logger("main_loop_log.csv")
 
-POSITION_TARGET = 150 # ft
+POSITION_TARGET = 148 # ft
 
 dyno_mode: bool = gc.dyno_mode
 
@@ -40,7 +40,7 @@ def find_belt_torque_clamp(belt_geometry_state: GeometryState):
     crank_angular_velocity = crank.engine_rpm * (2 * np.pi / 60)  # rad / s
 
     # need to fix the primaries before I start doing engagement sliding stuff
-    if (crank_angular_velocity > (belt.angular_velocity + 0.001)):
+    if (crank_angular_velocity > (belt.angular_velocity + 0.005)):
         belt_input_torque = belt.primary_sliding_torque(primary_clamp_force, belt_geometry_state)
         engaged = False
     else:
@@ -83,7 +83,7 @@ def find_accelerations_dyno(engine_torque, belt_input_torque, secondary_torque, 
         crank_accel = 0.0 # needs to be calculated after shift
     else:
         effective_accel, dyno_angular_accel = dyno.get_dyno_accels(secondary_torque, J_dyno)
-        crank_accel = (engine_torque - belt_input_torque * BELT_ENGAGEMENT_LOSS) / (J_crank / gc.phys.g)  # angular acceleration of just the crank
+        crank_accel = (engine_torque - belt_input_torque) / (J_crank / gc.phys.g)  # angular acceleration of just the crank
 
     logger.logDynoState(dyno, effective_accel, dyno_angular_accel, secondary_resistive_clamp, brake_input_torque)
 

@@ -20,7 +20,7 @@ class Primary:
     max_shift_in: float = 0.75
     groove_angle: float = np.radians(16.44)
 
-    fudged_engagement_rpm: float = 2100
+    fudged_engagement_rpm: float = 2600
      
 
 @frozen

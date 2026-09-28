@@ -7,13 +7,13 @@ from scipy.interpolate import interp1d
 # since efficiency is so fudgey, I'm not gonna mix it with the main physics calculations.
 
 # -------------------- BELT ----------------------
-BELT_ENGAGEMENT_LOSS = 1.003
+BELT_ENGAGEMENT_LOSS = 1.001
 BELT_PEAK_ETA = 0.90 # from messick's
 BELT_RATIO_POINTS = [ # ratio, efficiency
     (1.0, 1.0),
-    (2.7, 0.97),
-    (0.5, 0.93),
-    (4.0, 0.94)
+    (2.7, 0.96),
+    (0.5, 0.90),
+    (4.0, 0.92)
 ]
 
 _ratio_data = np.array([p[0] for p in BELT_RATIO_POINTS])
@@ -24,7 +24,7 @@ def get_belt_efficiency(ratio):
     return float(linear_interp(ratio)) * BELT_PEAK_ETA
 
 # -------------------- GEARS ----------------------
-GEAR_EFF_PER_MESH = 0.98 # efficiency per gear mesh, typical value
+GEAR_EFF_PER_MESH = 0.986 # efficiency per gear mesh, typical value
 
 def get_gear_efficiency(num_meshes):
     return GEAR_EFF_PER_MESH ** num_meshes

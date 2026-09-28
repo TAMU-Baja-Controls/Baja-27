@@ -24,7 +24,8 @@ class Belt:
         sec_clamp, sec_torque, slipping = propagate_clamp_forward(input_torque, self.angular_velocity, input_clamp, geometryState, self.cvt)
         sec_torque = sec_torque * get_belt_efficiency(geometryState.ratio)
         return sec_torque, sec_clamp, slipping
-    
+
+    # sliding torque transfer limimt, governed by mu_k
     def primary_sliding_torque(self, input_clamp, geometryState: GeometryState):
         if self.cvt == 0:
             groove_angle = gaged.Primary.groove_angle
