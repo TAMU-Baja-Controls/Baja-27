@@ -29,11 +29,11 @@ class Constants:
     # Derived values computed from geometry/force
     belt_mass_per_length: float = field(init=False) # slugs / in
 
-    shift_fudge_k: float = 0.0009 # units are (inches / s) / lbs i guess -- not a real physical constant, just a tuning parameter
+    shift_fudge_k: float = 0.0005 # units are (inches / s) / lbs i guess -- not a real physical constant, just a tuning parameter
     # positive constant that turns the secondary clamp delta into a shift_in change for a timestep
 
-    mu: float = 0.6
-    mu_k: float = 0.2
+    mu: float = 0.7
+    mu_k: float = 0.6
 
     def __post_init__(self):
         object.__setattr__(self, 'belt_mass_per_length',
@@ -59,16 +59,16 @@ ENDURO_100 = Constants(
     ),
 )
 
-GATES_03G3470 = Constants(
+GATES_CUSTOM = Constants(
     geometry=GeometryConstants(
-        cc=10.0,
-        belt_height=0.57,
-        belt_width=1.02,
-        belt_pitch_length=34.7,
+        cc=11.7717,
+        belt_height=0.33,
+        belt_width=1.05,
+        belt_pitch_length=38.05,
         belt_angle=np.radians(26.0),
-        min_radius_primary=1.13, # on the custom cvt
-        max_radius_primary=2.96,
-        min_radius_secondary=1.62,
+        min_radius_primary=1.08, # on the custom cvt
+        max_radius_primary=2.875,
+        min_radius_secondary=1.71,
         max_radius_secondary=3.39,
     ),
     force=ForceConstants(
@@ -81,8 +81,8 @@ GATES_03G3470 = Constants(
 
 BELT_CONFIGS = {
     "enduro100": ENDURO_100,
-    "gates03G3470": GATES_03G3470,
+    "gates_custom": GATES_CUSTOM,
 }
 
 # Select at runtime
-C = BELT_CONFIGS["enduro100"]
+C = BELT_CONFIGS["gates_custom"]

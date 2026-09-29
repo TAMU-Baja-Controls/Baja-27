@@ -24,7 +24,7 @@ def get_belt_efficiency(ratio):
     return float(linear_interp(ratio)) * BELT_PEAK_ETA
 
 # -------------------- GEARS ----------------------
-GEAR_EFF_PER_MESH = 0.986 # efficiency per gear mesh, typical value
+GEAR_EFF_PER_MESH = 0.99 # efficiency per gear mesh, typical value
 
 def get_gear_efficiency(num_meshes):
     return GEAR_EFF_PER_MESH ** num_meshes

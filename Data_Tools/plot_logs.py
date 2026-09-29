@@ -70,6 +70,14 @@ Y AXES
     There is no legend, because it covers the curves.  Instead each Y row's
     name (Y1, Y2, ...) is drawn in its curve's colour.
 
+SERIES COLOUR AND LINE
+    Each Y row has a "Colour" and a "Line" dropdown.  Left on "auto", every
+    row gets its own colour and its line type follows its file (see
+    "Line style per file"), so every series is told apart by default.
+    "Colour" also offers named colours and "custom…", which opens a colour
+    picker.  "Line" picks solid, dashed, dotted or dash-dot for that row
+    alone; in "points" mode the same choice picks the marker (• × + ▴).
+
 AXIS BOUNDS
     Every axis has its own "auto" tick box plus min / max boxes: the X axis
     on the X row, then one row per Y axis.  There is only ever one X axis,
@@ -118,7 +126,7 @@ from pathlib import Path
 
 import tkinter as tk
 import tkinter.font as tkfont
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, colorchooser
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -165,6 +173,20 @@ FILE_STYLES = (
     (":", "+", "·······", "+ + +"),
     ("-.", "^", "–·–·–", "▴ ▴ ▴"),
 )
+
+# Each Y row's "Colour" and "Line" dropdowns.  AUTO keeps the defaults: the
+# row's slot colour, and its file's line style.  A line type picks the
+# FILE_STYLES entry at the same position, so in "points" mode it picks the
+# marker instead.
+AUTO = "auto"
+CUSTOM_COLOR = "custom…"
+NAMED_COLORS = {
+    "blue": "#1f77b4", "red": "#d62728", "green": "#2ca02c",
+    "purple": "#9467bd", "orange": "#ff7f0e", "brown": "#8c564b",
+    "pink": "#e377c2", "gray": "#7f7f7f", "olive": "#bcbd22",
+    "cyan": "#17becf", "black": "#000000",
+}
+LINE_TYPES = ("solid", "dashed", "dotted", "dash-dot")
 
 # The "Axis" dropdown value for a row that owns its own Y axis.  The other
 # values are "same as Y1", "same as Y2", ...
@@ -403,6 +425,12 @@ class YRow:
         self.column_box = None
         self.axis_var = None
         self.axis_box = None
+        self.name_label = None
+        self.color_var = None
+        self.color_box = None
+        self.color_choice = AUTO      # to restore if "custom…" is cancelled
+        self.line_var = None
+        self.line_box = None
         self.auto = None
         self.auto_check = None
         self.bound_vars = None
@@ -651,7 +679,7 @@ class LogPlotter(tk.Tk):
         grid = ttk.Frame(box)
         grid.pack(side=tk.TOP, fill=tk.X, pady=(8, 0))
         for column, text in enumerate(
-                ("", "File", "Column", "Axis", "Bounds")):
+                ("", "File", "Column", "Axis", "Colour", "Line", "Bounds")):
             if text:
                 ttk.Label(grid, text=text, foreground=MUTED).grid(
                     row=0, column=column, sticky="w", padx=(0, 10))
@@ -661,7 +689,7 @@ class LogPlotter(tk.Tk):
         ttk.Label(grid, foreground=MUTED,
                   text="Each file's X column and offset are set in the "
                        "Files list above.").grid(
-            row=1, column=1, columnspan=3, sticky="w", pady=(4, 0))
+            row=1, column=1, columnspan=5, sticky="w", pady=(4, 0))
         self.x_auto = tk.BooleanVar(value=True)
         self.x_bound_vars, self.x_bound_entries = self._build_bound_row(
             grid, 1, self.x_auto, self._on_x_auto_toggle)
@@ -676,6 +704,7 @@ class LogPlotter(tk.Tk):
         row = YRow()
         name = ttk.Label(grid, text="Y{}".format(index + 1),
                          foreground=SERIES_COLORS[index], font=self.bold_font)
+        row.name_label = name
 
         row.file_var = tk.StringVar()
         row.file_box = ttk.Combobox(grid, textvariable=row.file_var,
@@ -697,6 +726,19 @@ class LogPlotter(tk.Tk):
         row.axis_box.bind("<<ComboboxSelected>>",
                           lambda _e: self._on_axis_change())
 
+        row.color_var = tk.StringVar(value=AUTO)
+        row.color_box = ttk.Combobox(
+            grid, textvariable=row.color_var, state="readonly", width=9,
+            values=[AUTO] + list(NAMED_COLORS) + [CUSTOM_COLOR])
+        row.color_box.bind("<<ComboboxSelected>>",
+                           lambda _e, i=index: self._on_color_selected(i))
+
+        row.line_var = tk.StringVar(value=AUTO)
+        row.line_box = ttk.Combobox(
+            grid, textvariable=row.line_var, state="readonly", width=9,
+            values=[AUTO] + list(LINE_TYPES))
+        row.line_box.bind("<<ComboboxSelected>>", lambda _e: self.draw())
+
         row.auto = tk.BooleanVar(value=True)
         row.bound_vars, entries = self._build_bound_row(
             grid, grid_row, row.auto,
@@ -705,15 +747,15 @@ class LogPlotter(tk.Tk):
         bound_frame = entries.pop("frame")
         row.bound_entries = entries
 
-        for column, widget in enumerate((name, row.file_box, row.column_box,
-                                         row.axis_box)):
+        boxes = (row.file_box, row.column_box, row.axis_box, row.color_box,
+                 row.line_box)
+        for column, widget in enumerate((name,) + boxes):
             widget.grid(row=grid_row, column=column, sticky="w",
                         padx=(0, 10), pady=(4, 0))
-        for box in (row.file_box, row.column_box, row.axis_box):
+        for box in boxes:
             self._guard_wheel(box)
 
-        row.widgets = (name, row.file_box, row.column_box, row.axis_box,
-                       bound_frame)
+        row.widgets = (name,) + boxes + (bound_frame,)
         return row
 
     def _build_bound_row(self, parent, row, auto_var, command):
@@ -725,7 +767,7 @@ class LogPlotter(tk.Tk):
                   "frame": frame}).
         """
         frame = ttk.Frame(parent)
-        frame.grid(row=row, column=4, sticky="w", pady=(4, 0))
+        frame.grid(row=row, column=6, sticky="w", pady=(4, 0))
 
         check = ttk.Checkbutton(frame, text="auto", variable=auto_var,
                                 command=command)
@@ -1174,6 +1216,35 @@ class LogPlotter(tk.Tk):
         self._refresh_file_glyphs()
         self.draw()
 
+    def _series_color(self, index, choice=None):
+        """The colour Y slot `index` is drawn in (or would be, for `choice`)."""
+        if choice is None:
+            choice = self.y_rows[index].color_var.get()
+        if choice in NAMED_COLORS:
+            return NAMED_COLORS[choice]
+        if choice.startswith("#"):
+            return choice
+        return SERIES_COLORS[index]
+
+    def _series_style_index(self, index, f):
+        """Which FILE_STYLES entry Y slot `index`, plotting `f`, uses."""
+        choice = self.y_rows[index].line_var.get()
+        if choice in LINE_TYPES:
+            return LINE_TYPES.index(choice)
+        return self._file_style_index(f)
+
+    def _on_color_selected(self, index):
+        row = self.y_rows[index]
+        if row.color_var.get() == CUSTOM_COLOR:
+            # Cancelling the picker keeps the previous choice.
+            chosen = colorchooser.askcolor(
+                color=self._series_color(index, row.color_choice),
+                parent=self, title="Y{} colour".format(index + 1))[1]
+            row.color_var.set(chosen if chosen else row.color_choice)
+        row.color_choice = row.color_var.get()
+        row.name_label.configure(foreground=self._series_color(index))
+        self.draw()
+
     # -- Axis controls -----------------------------------------------------
 
     def _axis_target(self, index):
@@ -1527,9 +1598,9 @@ class LogPlotter(tk.Tk):
             values = [v + offset for v in values]
         return values, name, offset
 
-    def _line_kwargs(self, f):
-        """matplotlib styling for one curve from file `f`."""
-        linestyle, marker = FILE_STYLES[self._file_style_index(f)][:2]
+    def _line_kwargs(self, index, f):
+        """matplotlib styling for Y slot `index`'s curve from file `f`."""
+        linestyle, marker = FILE_STYLES[self._series_style_index(index, f)][:2]
         style = self.style_var.get()
         if style == "points":
             return {"linestyle": "none", "marker": marker, "markersize": 3}
@@ -1647,15 +1718,15 @@ class LogPlotter(tk.Tk):
                 members = groups[owner]
                 for entry in members:
                     axes.plot(entry["xs"], entry["ys"],
-                              color=SERIES_COLORS[entry["slot"]],
-                              **self._line_kwargs(entry["file"]))
+                              color=self._series_color(entry["slot"]),
+                              **self._line_kwargs(entry["slot"], entry["file"]))
                 y_labels.append((axes, self._axis_label(members)))
                 # An axis carrying several series stays black: its label
                 # names them, and the coloured row names say which curve is
                 # which.
                 if len(owners) > 1 and len(members) == 1:
                     self._color_axis(position, axes,
-                                     SERIES_COLORS[members[0]["slot"]])
+                                     self._series_color(members[0]["slot"]))
 
             columns = []
             for entry in prepared:

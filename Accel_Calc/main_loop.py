@@ -18,7 +18,7 @@ from _logger.Logger import Logger
 crank = Crank(gc.car.idle_RPM, 0.0, gc.cvt)
 belt = Belt(0.0, 0.0, gc.cvt)
 driveline = Driveline(0.0, 0.0, gc.cvt)
-dyno = Dyno(34.6, 0.0, 0.0, gc.cvt)
+dyno = Dyno(0.0, 0.0, 0.0, gc.cvt)
 tire = Tire(0.0, 0.0, 0.0)
 
 logger = Logger("main_loop_log.csv")
@@ -56,9 +56,9 @@ def find_belt_torque_clamp(belt_geometry_state: GeometryState):
     
     secondary_resistive_clamp = dyno.get_resistive_clamp(secondary_torque) if dyno_mode else driveline.get_resistive_clamp(secondary_torque)
 
-    if (secondary_clamp_force < secondary_resistive_clamp) and abs(belt_geometry_state.rad_prim - bc.C.geometry.min_radius_primary) > 0.02:
+    if (secondary_clamp_force < secondary_resistive_clamp) and abs(belt_geometry_state.rad_prim - bc.C.geometry.min_radius_primary) > 0.001:
         shift_force_delta = secondary_clamp_force - secondary_resistive_clamp # negative means backshift
-    elif (secondary_clamp_force >= secondary_resistive_clamp) and abs(belt_geometry_state.rad_prim - bc.C.geometry.max_radius_primary) > 0.02:
+    elif (secondary_clamp_force >= secondary_resistive_clamp) and abs(belt_geometry_state.rad_prim - bc.C.geometry.max_radius_primary) > 0.001:
         shift_force_delta = secondary_clamp_force - secondary_resistive_clamp # positive means upshift
     else:
         shift_force_delta = 0  # no shift

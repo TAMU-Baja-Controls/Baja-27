@@ -22,7 +22,9 @@ linear_spring_expr = C_sec.compression_spring_rate * (X_sec + C_sec.compression_
 
 torsion_spring_expr = C_sec.torsional_spring_rate * (rad_per_in * X_sec + C_sec.torsional_preload)  # in-lbs
 
-torque_feedback_expr = torque_sec * 12 * 0.5
+TORQUE_FEEDBACK_COEFF = 0.25
+
+torque_feedback_expr = torque_sec * 12 * TORQUE_FEEDBACK_COEFF
 
 helix_expr = (torsion_spring_expr + torque_feedback_expr) / (C_sec.helix_radius * helix_tan)
 
@@ -62,7 +64,7 @@ def plot_secondary_clamp_force():
     scatter = ax.scatter(torque_points, x_sec_points, clamping_force_points, c=clamping_force_points, cmap='viridis')
 
     # Labels
-    ax.set_xlabel('Torque (ft-lbs) [25% to movable sheave]')
+    ax.set_xlabel('Torque (ft-lbs)')
     ax.set_ylabel('Shift (inches)')
     ax.set_zlabel('Clamping Force (lbs)')
     ax.set_title('Secondary Clamping Force vs Torque and Shift')

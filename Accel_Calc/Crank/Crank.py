@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from Crank.gaged_primary_forces import get_clamping_force_primary_gaged
+from Crank.custom_forces import get_clamp_force
 from Crank.engine_interpolator import get_engine_torque
 from _cvts import gaged, custom
 from Driveline import driveline_constants as dc
@@ -18,7 +19,7 @@ class Crank:
         if self.cvt == 0:
             return get_clamping_force_primary_gaged(self.engine_rpm, self.shift_in)
         elif self.cvt == 1:
-            return 0.0 # FIXME until custom CVT code
+            return get_clamp_force(self.engine_rpm, self.shift_in)
     
     def primary_torque(self):
         return get_engine_torque(self.engine_rpm)

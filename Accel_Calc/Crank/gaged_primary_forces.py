@@ -54,6 +54,10 @@ def plot_primary_curve():
             rpm_vals.append(rpm)
             shift_vals.append(shift)
 
+    low_rpm_clamp_forces = [get_clamping_force_primary_gaged(1500, shift) for shift in TEST_SHIFT_IN_RANGE]
+    for f in low_rpm_clamp_forces:
+        print(f)
+
     fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(rpm_vals, shift_vals, clamp_vals, marker='o')
@@ -62,3 +66,4 @@ def plot_primary_curve():
     ax.set_zlabel('Primary Clamping Force (lbs)')
     ax.set_title('Primary Clamping Force vs Engine RPM and Shift Distance')
     plt.show()
+
