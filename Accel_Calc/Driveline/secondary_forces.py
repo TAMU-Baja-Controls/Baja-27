@@ -22,7 +22,7 @@ linear_spring_expr = C_sec.compression_spring_rate * (X_sec + C_sec.compression_
 
 torsion_spring_expr = C_sec.torsional_spring_rate * (rad_per_in * X_sec + C_sec.torsional_preload)  # in-lbs
 
-TORQUE_FEEDBACK_COEFF = 0.25
+TORQUE_FEEDBACK_COEFF = 0.2
 
 torque_feedback_expr = torque_sec * 12 * TORQUE_FEEDBACK_COEFF
 

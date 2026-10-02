@@ -25,14 +25,14 @@ class CarWideConstants:
     A_frontal: float = 18.0   # ft^2
     C_drag: float = 0.563
     C_rolling: float = 0.0122
-    W_car: float = 380.0 # lbs
+    W_car: float = 330.0 # lbs
     W_driver: float = 165.0 # lbs
     W_fuel: float = 10.0 # lbs
     W_total: float = W_car + W_driver + W_fuel
     m_total: float = W_total / PhysicsConstants.g  # mass in slugs
     idle_RPM: float = 1800.0
     max_rpm: float = 3600.0
-    four_wheel_drive: bool = True
+    four_wheel_drive: bool = False
     cg_height: float = 18.25 / 12.0 # ft off the ground
     wheelbase: float = 60.0 / 12.0 # ft
 
@@ -43,5 +43,5 @@ class CalcConstants:
 phys: PhysicsConstants = PhysicsConstants()
 car: CarWideConstants = CarWideConstants()
 calc: CalcConstants = CalcConstants()
-cvt: int = 1 # 0 is gaged, 1 is custom
+cvt: int = 0 # 0 is gaged, 1 is custom
 dyno_mode: bool = False # instead of driveline and tire, it uses dyno disk + brake system

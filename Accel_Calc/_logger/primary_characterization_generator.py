@@ -8,7 +8,7 @@ INPUT_FILE_PATH = "Logs/main_loop_log.csv"
 OUTPUT_FILE_PATH = "Logs/primary_characterization.csv"
 
 HEADERS = ["crank_speed_rpm", "shift_in", "input_clamp"]
-POINTS = 30 # how many timestep datapoints the output has to have
+POINTS = 45 # how many timestep datapoints the output has to have
 
 # resolve paths relative to this file so the script works from any working directory
 BASE_DIR = Path(__file__).resolve().parent

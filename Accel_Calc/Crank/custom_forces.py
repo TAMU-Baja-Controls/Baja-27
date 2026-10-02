@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from _cvts import custom
 
 _clamp_x = [i / 14 for i in range(15)]
-_clamp_y = [75, 80, 85, 80, 80, 75, 70, 65, 60, 55, 40, 35, 30, 30, 25]
+_clamp_y = [60, 50, 45, 40, 40, 40, 35, 35, 35, 35, 30, 30, 25, 25, 20]
 
 def get_min_rpm_clamp_force(x):
     if x <= 0: return _clamp_y[0]

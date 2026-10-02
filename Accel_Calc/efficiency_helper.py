@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 
 # -------------------- BELT ----------------------
 BELT_ENGAGEMENT_LOSS = 1.001
-BELT_PEAK_ETA = 0.90 # from messick's
+BELT_PEAK_ETA = 0.925 # from messick's
 BELT_RATIO_POINTS = [ # ratio, efficiency
     (1.0, 1.0),
     (2.7, 0.96),
@@ -24,13 +24,17 @@ def get_belt_efficiency(ratio):
     return float(linear_interp(ratio)) * BELT_PEAK_ETA
 
 # -------------------- GEARS ----------------------
-GEAR_EFF_PER_MESH = 0.99 # efficiency per gear mesh, typical value
+GEAR_EFF_PER_MESH = 0.995 # efficiency per gear mesh, typical value
 
-def get_gear_efficiency(num_meshes):
+def get_gear_efficiency(four_wheel_drive: bool):
+    if four_wheel_drive:
+        num_meshes = 4
+    else:
+        num_meshes = 2
     return GEAR_EFF_PER_MESH ** num_meshes
 
 # -------------------- RZEPPA CV JOINTS ----------------------
-EFFICIENCY_LOSS_PER_DEGREE = 0.002 # based on Cirelli paper
+EFFICIENCY_LOSS_PER_DEGREE = 0.001 # based on Cirelli paper
 
 def get_rzeppa_efficiency(angle_degrees, four_wheel_drive: bool):
     eta_one_joint = 1.0 - (EFFICIENCY_LOSS_PER_DEGREE * angle_degrees)

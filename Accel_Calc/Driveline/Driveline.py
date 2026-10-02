@@ -18,7 +18,7 @@ class Driveline:
         return get_clamping_force_secondary(secondary_torque, self.shift_out)
     
     def get_output_torque(self, secondary_torque):
-        return secondary_torque * dc.final_drive * get_gear_efficiency(2) * get_rzeppa_efficiency(1.5, gc.car.four_wheel_drive)
+        return secondary_torque * dc.final_drive * get_gear_efficiency(gc.car.four_wheel_drive) * get_rzeppa_efficiency(10, gc.car.four_wheel_drive)
     
     # lb-ft^2 from the wheels POV -- not including crank
     def get_driveline_J(self):

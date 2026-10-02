@@ -11,7 +11,7 @@ def frozen(cls):
 
 @frozen
 class TireConstants:
-    diameter: float = 23.0 / 12.0  # ft
+    diameter: float = 21.0 / 12.0  # ft
     width: float = 7.0 / 12.0    # ft
     deflection: float = 1.0 / 12.0  # ft -- how much radius is lost to squish
     section_height: float = 5.5 / 12.0  # ft -- edge of rim bead to edge of tire

@@ -6,7 +6,7 @@ def frozen(cls):
 
 @frozen
 class Primary:
-    counterspring_rate: float = 64.19       # lbs/in
+    counterspring_rate: float = 100.6      # lbs/in
     counterspring_preload: float = 0.875     # in, based on gaged
     w_weights: float = 1.4                 # lbs, based on Gaged
     w_links: float = 0.2                   # lbs, based on Gaged

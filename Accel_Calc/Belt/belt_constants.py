@@ -32,8 +32,8 @@ class Constants:
     shift_fudge_k: float = 0.0005 # units are (inches / s) / lbs i guess -- not a real physical constant, just a tuning parameter
     # positive constant that turns the secondary clamp delta into a shift_in change for a timestep
 
-    mu: float = 0.7
-    mu_k: float = 0.6
+    mu: float = 0.6
+    mu_k: float = 0.3
 
     def __post_init__(self):
         object.__setattr__(self, 'belt_mass_per_length',
@@ -85,4 +85,4 @@ BELT_CONFIGS = {
 }
 
 # Select at runtime
-C = BELT_CONFIGS["gates_custom"]
+C = BELT_CONFIGS["enduro100"]
