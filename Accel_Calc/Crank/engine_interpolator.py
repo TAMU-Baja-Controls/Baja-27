@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import general_constants as gc
 
 rpms = np.array([1790, 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 3601])
-torque = np.array([20.0, 19.5, 19.0, 18.5, 18.1, 17.4, 16.6, 15.4, 14.5, 13.5]) # ft-lbs
+torque = np.array([18.2, 18.6, 18.7, 18.5, 18.1, 17.4, 16.6, 15.4, 14.5, 13.5]) # ft-lbs
 
 rpms_redline = np.array([3600, 3650, 3700, 3750, 3800])
 torque_redline = np.array([13.5, 9.5, 4.5, 2.0, 0.0]) # ft-lbs
