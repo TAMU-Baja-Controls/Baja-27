@@ -1,0 +1,2 @@
+C:/EngineeringProjects/Coding/Embedded_C_MCU_Projects/pratsdaq_V3/build/CMakeFiles/ALL_BUILD.dir
+C:/EngineeringProjects/Coding/Embedded_C_MCU_Projects/pratsdaq_V3/build/CMakeFiles/ZERO_CHECK.dir
