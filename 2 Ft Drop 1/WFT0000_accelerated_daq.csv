@@ -1,0 +1,1 @@
+time_s,timestamp_us,can_id,primary_rpm,secondary_rpm,node_timestamp_ms,speed_kph,fix_status,num_svs,racebox_ax_g,racebox_ay_g,racebox_az_g
