@@ -1,0 +1,39 @@
+BAJA CAN LOG SUMMARY
+
+File,WFT0000.BIN
+File Size (bytes),7385880
+Record Size (bytes),20
+Complete CAN Records,369294
+Incomplete Bytes,0
+
+Recording Duration (s),123.097354
+Recording Duration (min),2.052
+Average CAN Frames/sec,3000.02
+
+ESP32 micros() Rollovers,0
+Extended Frames,0
+RTR Frames,0
+
+CT3 / WFT Decode
+Decoded CT3 Frames,369294
+Decoded WFT Samples,123098
+Decoded WFT Samples/sec,1000.01
+Incomplete CT3 Sample Sets,0
+
+Accelerated DAQ Decode
+Total Accelerated DAQ Frames,0
+Accelerated DAQ Frames/sec,0.00
+RPM Frames,0
+RPM Frames/sec,0.00
+RaceBox GPS Frames,0
+RaceBox GPS Frames/sec,0.00
+RaceBox IMU Frames,0
+RaceBox IMU Frames/sec,0.00
+
+CAN ID,Frame Count,Average Frames/sec
+0x21,123098,1000.01
+0x22,123098,1000.01
+0x23,123098,1000.01
+
+DLC,Frame Count
+8,369294
