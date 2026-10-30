@@ -85,4 +85,4 @@ BELT_CONFIGS = {
 }
 
 # Select at runtime
-C = BELT_CONFIGS["enduro100"]
+C = BELT_CONFIGS["gates_custom"]

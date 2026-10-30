@@ -18,11 +18,11 @@ class Primary:
 
 @frozen
 class Secondary:
-    compression_spring_rate: float = 60  # lbs/in
+    compression_spring_rate: float = 52  # lbs/in
     torsional_spring_rate: float = 0.0   # in-lbs/rad
-    helix_angle: float = np.radians(26.0)             # radians
+    helix_angle: float = np.radians(30.0)             # radians
     helix_radius: float = 1.375           # in
-    compression_preload: float = 0.3      # in
+    compression_preload: float = 0.4      # in
     torsional_preload: float = np.radians(60.0)        # radians, tunable parameter
 
     groove_angle: float = np.radians(26)
